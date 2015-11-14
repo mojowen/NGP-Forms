@@ -356,27 +356,10 @@ class NGPDonationFrontend {
                             $payment_data['LastName'] = $names[1];
                         } else if(count($names)>2) {
                             // Check for Prefix
-                            array_walk($namePrefixes, function($value, $key, &$the_names) {
-                                if(strlen($the_names[0])==strlen($value) && stripos($the_names[0], $value)!==false && isset($the_names[0])) {
-                                    $the_names['prefix'] = $value;
-                                    unset($the_names[0]);
-                                }
-                            }, &$names);
+                            array_walk($namePrefixes, ngp_prefix_strip_array_walk, &$names);
 
                             // Check for Suffix
-                            array_walk($nameSuffixes, function($value, $key, &$the_names) {
-                                $possible_suffix = null;
-                                foreach($the_names as $k => $v) {
-                                    if(is_int($k)) {
-                                        $possible_skey = $k;
-                                        $possible_suffix = $v;
-                                    }
-                                }
-                                if(strlen($possible_suffix)==strlen($key) && stripos($possible_suffix, $key)!==false) {
-                                    $the_names['suffix'] = $value;
-                                    unset($the_names[$possible_skey]);
-                                }
-                            }, &$names);
+                            array_walk($nameSuffixes, ngp_suffix_strip_array_walk, &$names);
                             
                             // Whatever is left over, set as FirstName, MiddleName, LastName
                             if(isset($names['prefix'])) {
@@ -918,4 +901,24 @@ function ngp_donation_invite_form($atts=null) {
 function ngp_donation_trim_walk(&$value) {
     $chars = "\t\n\r\0\x0B,.[]{};:\"'\x00..\x1F";
     $value = trim($value, $chars);
+}
+function ngp_prefix_strip_array_walk($value, $key, &$the_names) {
+    if(strlen($the_names[0])==strlen($value) && stripos($the_names[0], $value)!==false && isset($the_names[0])) {
+        $the_names['prefix'] = $value;
+        unset($the_names[0]);
+    }
+}
+
+function ngp_suffixx_strip_array_walk($value, $key, &$the_names) {
+    $possible_suffix = null;
+    foreach($the_names as $k => $v) {
+        if(is_int($k)) {
+            $possible_skey = $k;
+            $possible_suffix = $v;
+        }
+    }
+    if(strlen($possible_suffix)==strlen($key) && stripos($possible_suffix, $key)!==false) {
+        $the_names['suffix'] = $value;
+        unset($the_names[$possible_skey]);
+    }
 }
