@@ -356,10 +356,10 @@ class NGPDonationFrontend {
                             $payment_data['LastName'] = $names[1];
                         } else if(count($names)>2) {
                             // Check for Prefix
-                            array_walk($namePrefixes, ngp_prefix_strip_array_walk, &$names);
+                            array_walk($namePrefixes, ngp_prefix_strip_array_walk);
 
                             // Check for Suffix
-                            array_walk($nameSuffixes, ngp_suffix_strip_array_walk, &$names);
+                            array_walk($nameSuffixes, ngp_suffix_strip_array_walk);
                             
                             // Whatever is left over, set as FirstName, MiddleName, LastName
                             if(isset($names['prefix'])) {
@@ -908,7 +908,6 @@ function ngp_prefix_strip_array_walk($value, $key, &$the_names) {
         unset($the_names[0]);
     }
 }
-
 function ngp_suffixx_strip_array_walk($value, $key, &$the_names) {
     $possible_suffix = null;
     foreach($the_names as $k => $v) {
